@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文房具英訳クイズ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&family=Noto+Sans+JP:wght@300;500;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background:
+                radial-gradient(120% 120% at 10% 10%, rgba(99, 102, 241, 0.18), transparent 70%),
+                radial-gradient(120% 120% at 90% 10%, rgba(59, 130, 246, 0.12), transparent 65%),
+                linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+        }
+
+        .glass-card {
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .floating {
+            animation: float 16s ease-in-out infinite;
+        }
+
+        .floating-delay {
+            animation-delay: 6s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0.4; }
+            25% { transform: translateY(-14px) translateX(8px); opacity: 0.7; }
+            50% { transform: translateY(6px) translateX(-10px); opacity: 0.5; }
+            75% { transform: translateY(-12px) translateX(6px); opacity: 0.7; }
+            100% { transform: translateY(0) translateX(0); opacity: 0.4; }
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 14px;
+            border-radius: 2px;
+            opacity: 0;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translate3d(var(--x-start), -10%, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate3d(var(--x-end), 110vh, 0) rotate(720deg); opacity: 0; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-32 -right-16 w-64 h-64 rounded-full bg-brand-100 blur-3xl floating"></div>
+        <div class="absolute top-40 -left-24 w-72 h-72 rounded-full bg-indigo-200 blur-2xl floating floating-delay"></div>
+        <div class="absolute bottom-10 right-10 w-48 h-48 rounded-full bg-sky-200 blur-3xl floating"></div>
+    </div>
+
+    <main class="relative z-10 w-full max-w-5xl mx-auto px-4 py-12 space-y-10">
+        <!-- レベル選択画面 -->
+        <div id="level-selection" class="glass-card rounded-3xl shadow-xl border border-white/60 p-6 md:p-10">
+            <header class="text-center space-y-3 mb-10">
+                <span class="inline-flex items-center gap-2 rounded-full bg-white/80 px-5 py-2 text-sm font-semibold text-brand-600 shadow">✨ 文房具ラバーズ向け</span>
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">文房具 英訳チャレンジ</h1>
+                <p class="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">こだわりの文房具用語を英語に訳すクイズです。ヒントをうまく使いながら、全問正解を目指しましょう！</p>
+            </header>
+            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                <button id="beginner-btn" class="level-btn glass-card rounded-2xl border border-brand-200 p-8 text-left hover:border-brand-400 hover:shadow-lg transition-all">
+                    <div class="text-3xl mb-3">📚</div>
+                    <h2 class="text-2xl font-bold text-brand-700 mb-2">初級</h2>
+                    <p class="text-slate-600 mb-4">基本的な文房具ブランドとモデル名を学びます</p>
+                    <p class="text-sm text-slate-500">100問</p>
+                </button>
+                <button id="intermediate-btn" class="level-btn glass-card rounded-2xl border border-purple-200 p-8 text-left hover:border-purple-400 hover:shadow-lg transition-all">
+                    <div class="text-3xl mb-3">🎓</div>
+                    <h2 class="text-2xl font-bold text-purple-700 mb-2">中級</h2>
+                    <p class="text-slate-600 mb-4">より高度な文房具用語と表現に挑戦します</p>
+                    <p class="text-sm text-slate-500">100問</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- クイズ画面 -->
+        <div id="quiz-container" class="hidden">
+            <header class="text-center space-y-3 mb-6">
+                <div class="flex items-center justify-center gap-3">
+                    <button id="back-to-levels" class="text-slate-500 hover:text-slate-700 transition">← レベル選択に戻る</button>
+                    <span id="current-level" class="inline-flex items-center gap-2 rounded-full bg-white/80 px-5 py-2 text-sm font-semibold text-brand-600 shadow"></span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">文房具 英訳チャレンジ</h1>
+                <p class="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">こだわりの文房具用語を英語に訳すクイズです。ヒントをうまく使いながら、全問正解を目指しましょう！</p>
+            </header>
+
+            <section class="glass-card rounded-3xl shadow-xl border border-white/60 p-6 md:p-10 space-y-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="space-y-2">
+                        <p id="progress" class="text-lg md:text-xl font-semibold text-brand-600">問 1 / 100</p>
+                        <div class="w-full md:w-72 h-3 rounded-full bg-slate-200 overflow-hidden">
+                            <div id="progress-bar" class="h-full w-0 bg-gradient-to-r from-brand-500 to-sky-400 transition-all duration-500 ease-out"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 text-sm">
+                        <span id="score-display" class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold">正解数: 0</span>
+                        <span id="streak-display" class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-semibold">連続正解: 0</span>
+                        <span id="hint-usage" class="px-3 py-1 rounded-full bg-violet-100 text-violet-700 font-semibold">ヒント使用: 0</span>
+                    </div>
+                </div>
+
+                <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)]">
+                    <article class="rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-6 shadow-inner space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white text-brand-600 text-xl font-bold shadow-sm">JP</span>
+                            <h2 class="text-xl font-bold text-brand-700">日本語のフレーズ</h2>
+                        </div>
+                        <p id="japanese-text" class="text-2xl font-black text-slate-900 leading-relaxed"></p>
+                        <button id="hint-button" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-700 transition">💡 ヒントを見る</button>
+                        <p id="hint-text" class="hidden mt-2 rounded-xl bg-white/90 border border-dashed border-brand-200 px-4 py-3 text-sm text-slate-600"></p>
+                    </article>
+
+                    <div class="space-y-4">
+                        <p class="text-sm font-semibold text-slate-600 uppercase tracking-wide">単語をタップして英訳を並べ替えてください</p>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">単語バンク</p>
+                                <div id="word-bank" class="flex flex-wrap gap-2 rounded-2xl border border-brand-100 bg-white/60 p-3 min-h-[3rem]"></div>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">あなたの英訳</p>
+                                <div id="assembled-answer" class="flex flex-wrap gap-2 rounded-2xl border border-dashed border-brand-200 bg-white/70 p-3 min-h-[3rem]"></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-3 pt-1">
+                            <button id="check-button" class="flex-1 inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-600 px-4 py-3 text-base font-semibold text-white shadow-lg hover:bg-brand-700 transition disabled:bg-brand-300 disabled:shadow-none">✅ 答えを確定</button>
+                            <button id="next-button" class="flex-1 inline-flex justify-center items-center gap-2 rounded-2xl bg-slate-200 px-4 py-3 text-base font-semibold text-slate-700 shadow hover:bg-slate-300 transition hidden" disabled>➡️ 次の問題へ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="feedback-area" class="min-h-[6rem] transition-all duration-500"></div>
+
+                <div id="answer-box" class="hidden rounded-2xl border border-green-200 bg-green-50/80 p-5 shadow-inner space-y-3">
+                    <p class="text-sm font-semibold text-green-600 uppercase tracking-wide">正解</p>
+                    <p id="correct-answer" class="font-mono text-lg text-green-900"></p>
+                </div>
+            </section>
+
+            <footer class="text-center text-sm text-slate-500 mt-6">
+                <button id="review-wrong-btn" class="text-brand-600 hover:text-brand-700 underline hidden">📝 間違った問題を確認する</button>
+            </footer>
+        </div>
+
+        <!-- 間違った問題レビュー画面 -->
+        <div id="review-container" class="hidden">
+            <div class="glass-card rounded-3xl shadow-xl border border-white/60 p-6 md:p-10">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-black text-brand-600">間違った問題の確認</h2>
+                    <button id="close-review" class="text-slate-500 hover:text-slate-700 transition">✕ 閉じる</button>
+                </div>
+                <div id="review-list" class="space-y-4"></div>
+            </div>
+        </div>
+    </main>
+
+    <div id="confetti-container" class="pointer-events-none fixed inset-0 overflow-hidden"></div>
+
+    <script>
+        // 初級問題（モデル名まで含む）
+        const beginnerQuestions = [
+            {"id": 1, "jp": "私はPILOTのHi-Tec-Cを持っています。", "en": "I have a PILOT Hi-Tec-C."},
+            {"id": 2, "jp": "これはZEBRAのSarasa Clipです。", "en": "This is a ZEBRA Sarasa Clip."},
+            {"id": 3, "jp": "私の鉛筆はSTAEDTLERのMars Lumographです。", "en": "My pencil is a STAEDTLER Mars Lumograph."},
+            {"id": 4, "jp": "あなたはuniのKuru Togaを使いますか？", "en": "Do you use a uni Kuru Toga?"},
+            {"id": 5, "jp": "私の消しゴムはTombowのMONOです。", "en": "My eraser is a Tombow MONO."},
+            {"id": 6, "jp": "私の兄はLAMYのSafariを使っています。", "en": "My brother uses a LAMY Safari."},
+            {"id": 7, "jp": "私はKOKUYOのCampusノートが大好きです。", "en": "I love KOKUYO Campus notebooks."},
+            {"id": 8, "jp": "これはPentelのEnerGelですか？", "en": "Is this a Pentel EnerGel?"},
+            {"id": 9, "jp": "私の定規は無印良品のアルミ定規です。", "en": "My ruler is a MUJI aluminum ruler."},
+            {"id": 10, "jp": "彼女はFaber-CastellのPolychromos色鉛筆を持っています。", "en": "She has Faber-Castell Polychromos colored pencils."},
+            {"id": 11, "jp": "私の筆箱はPilotのSiderです。", "en": "My pencil case is a Pilot Sider."},
+            {"id": 12, "jp": "彼はSakuraのPigma Micronを使っています。", "en": "He uses a Sakura Pigma Micron."},
+            {"id": 13, "jp": "あなたはどのブランドのノートを使いますか？", "en": "Which brand of notebook do you use?"},
+            {"id": 14, "jp": "これはTombowのMONO消しゴムです。", "en": "This is a Tombow MONO eraser."},
+            {"id": 15, "jp": "私はSTAEDTLERの925 25を使っています。", "en": "I use a STAEDTLER 925 25."},
+            {"id": 16, "jp": "そのペンはLAMYのAl-Starです。", "en": "That pen is a LAMY Al-Star."},
+            {"id": 17, "jp": "私はKOKUYOのSmart Ring Binderを持っています。", "en": "I have a KOKUYO Smart Ring Binder."},
+            {"id": 18, "jp": "あなたはどこでZEBRAのSarasaを買いましたか？", "en": "Where did you buy the ZEBRA Sarasa?"},
+            {"id": 19, "jp": "私の母はMoleskineのClassicノートを使っています。", "en": "My mother uses a Moleskine Classic notebook."},
+            {"id": 20, "jp": "私はuni-ballのSigno DXで書きます。", "en": "I write with a uni-ball Signo DX."},
+            {"id": 21, "jp": "これはPentelのAin STEINです。", "en": "This is a Pentel Ain STEIN."},
+            {"id": 22, "jp": "あなたのペンはTombowのZoom 828ですか？", "en": "Is your pen a Tombow Zoom 828?"},
+            {"id": 23, "jp": "彼の鉛筆はFaber-Castellの9000です。", "en": "His pencil is a Faber-Castell 9000."},
+            {"id": 24, "jp": "これは日本製の文房具です。", "en": "This is a Japanese stationery item."},
+            {"id": 25, "jp": "私はPILOTのFriXion Ballを使います。", "en": "I use a PILOT FriXion Ball."},
+            {"id": 26, "jp": "そのペンは書きやすいですか？", "en": "Is that pen easy to write with?"},
+            {"id": 27, "jp": "私はZEBRAのMildlinerを3本持っています。", "en": "I have three ZEBRA Mildliners."},
+            {"id": 28, "jp": "彼女はLAMYのStudioの赤いペンを持っています。", "en": "She has a red LAMY Studio pen."},
+            {"id": 29, "jp": "私はKOKUYOのCampusノートを毎日使います。", "en": "I use a KOKUYO Campus notebook every day."},
+            {"id": 30, "jp": "これはPentelのGraphGear 1000です。", "en": "This is a Pentel GraphGear 1000."},
+            {"id": 31, "jp": "彼はTombowのMONO消しゴムをよく使います。", "en": "He often uses a Tombow MONO eraser."},
+            {"id": 32, "jp": "私の鉛筆は短いです。", "en": "My pencil is short."},
+            {"id": 33, "jp": "そのシャープペンは高いですか？", "en": "Is that mechanical pencil expensive?"},
+            {"id": 34, "jp": "私はPentelのN50を使っています。", "en": "I use a Pentel N50."},
+            {"id": 35, "jp": "彼女はKOKUYOのAir Touchファイルを持っています。", "en": "She has a KOKUYO Air Touch file."},
+            {"id": 36, "jp": "これはZEBRAのボールペンですか？", "en": "Is this a ZEBRA ballpoint pen?"},
+            {"id": 37, "jp": "私はSTAEDTLERのNoris鉛筆が好きです。", "en": "I like STAEDTLER Noris pencils."},
+            {"id": 38, "jp": "あなたのノートは無印良品ですか？", "en": "Is your notebook MUJI?"},
+            {"id": 39, "jp": "彼はLAMYの2000万年筆を使います。", "en": "He uses a LAMY 2000 fountain pen."},
+            {"id": 40, "jp": "私はuniのKuru Togaの0.5mmを使います。", "en": "I use a 0.5mm uni Kuru Toga."},
+            {"id": 41, "jp": "あなたはどの消しゴムが好きですか？", "en": "Which eraser do you like?"},
+            {"id": 42, "jp": "これはTombowのZoom 828シャープペンです。", "en": "This is a Tombow Zoom 828 mechanical pencil."},
+            {"id": 43, "jp": "私はPentelのTouch Sign Penを持っています。", "en": "I have a Pentel Touch Sign Pen."},
+            {"id": 44, "jp": "その定規は透明です。", "en": "That ruler is transparent."},
+            {"id": 45, "jp": "私のノートはB5サイズです。", "en": "My notebook is B5 size."},
+            {"id": 46, "jp": "私はLAMYのSafariのブルーペンを買いました。", "en": "I bought a blue LAMY Safari pen."},
+            {"id": 47, "jp": "彼女はZEBRAのMildlinerを使っています。", "en": "She uses a ZEBRA Mildliner."},
+            {"id": 48, "jp": "これはKOKUYOのCampusノートです。", "en": "This is a KOKUYO Campus notebook."},
+            {"id": 49, "jp": "私の友達はMoleskineのWeekly Plannerを持っています。", "en": "My friend has a Moleskine Weekly Planner."},
+            {"id": 50, "jp": "あなたはどのブランドのペンが好きですか？", "en": "Which pen brand do you like?"},
+            {"id": 51, "jp": "彼はuni-ballのEyeを使います。", "en": "He uses a uni-ball Eye."},
+            {"id": 52, "jp": "これはFaber-CastellのGrip鉛筆セットです。", "en": "This is a Faber-Castell Grip pencil set."},
+            {"id": 53, "jp": "その消しゴムはTombowですか？", "en": "Is that eraser Tombow?"},
+            {"id": 54, "jp": "私はPentelのEnerGelを使っています。", "en": "I use a Pentel EnerGel."},
+            {"id": 55, "jp": "これはPILOTのJuiceです。", "en": "This is a PILOT Juice."},
+            {"id": 56, "jp": "彼女はZEBRAのMildlinerが好きです。", "en": "She likes ZEBRA Mildliners."},
+            {"id": 57, "jp": "あなたのペンケースはどこ製ですか？", "en": "Where is your pencil case from?"},
+            {"id": 58, "jp": "私の兄はLAMYのSafari万年筆を集めています。", "en": "My brother collects LAMY Safari fountain pens."},
+            {"id": 59, "jp": "私の母はMoleskineのClassicノートを毎日使います。", "en": "My mother uses a Moleskine Classic notebook every day."},
+            {"id": 60, "jp": "これはPentelのSign Penです。", "en": "This is a Pentel Sign Pen."},
+            {"id": 61, "jp": "そのペンはPILOTのCustom 74です。", "en": "That pen is a PILOT Custom 74."},
+            {"id": 62, "jp": "私はTombowのペンが好きです。", "en": "I like Tombow pens."},
+            {"id": 63, "jp": "あなたはどの色の蛍光ペンを使いますか？", "en": "Which color highlighter do you use?"},
+            {"id": 64, "jp": "彼のノートはKOKUYOです。", "en": "His notebook is KOKUYO."},
+            {"id": 65, "jp": "私はSTAEDTLERのNoris青い鉛筆を持っています。", "en": "I have a blue STAEDTLER Noris pencil."},
+            {"id": 66, "jp": "これはZEBRAのSarasaです。", "en": "This is a ZEBRA Sarasa."},
+            {"id": 67, "jp": "彼女はPILOTのFriXion Ballでノートを書きます。", "en": "She writes her notes with a PILOT FriXion Ball."},
+            {"id": 68, "jp": "彼はLAMYのAl-Starの黒いペンを使っています。", "en": "He uses a black LAMY Al-Star pen."},
+            {"id": 69, "jp": "私のペンはPentel EnerGelです。", "en": "My pen is a Pentel EnerGel."},
+            {"id": 70, "jp": "あなたはどこでTombowのZoom 828を買いましたか？", "en": "Where did you buy the Tombow Zoom 828?"},
+            {"id": 71, "jp": "私はKOKUYOのCampusルーズリーフを使っています。", "en": "I use KOKUYO Campus loose-leaf paper."},
+            {"id": 72, "jp": "彼女はuni-ballのSigno DXの黒いペンを使います。", "en": "She uses a black uni-ball Signo DX pen."},
+            {"id": 73, "jp": "あなたはPILOTのHi-Tec-Cが好きですか？", "en": "Do you like PILOT Hi-Tec-C pens?"},
+            {"id": 74, "jp": "私はZEBRAのSarasa Clipを毎日使います。", "en": "I use ZEBRA Sarasa Clip pens every day."},
+            {"id": 75, "jp": "彼の筆箱はKOKUYOです。", "en": "His pencil case is KOKUYO."},
+            {"id": 76, "jp": "これはSTAEDTLERのMars Technicoシャープナーです。", "en": "This is a STAEDTLER Mars Technico sharpener."},
+            {"id": 77, "jp": "私はPentelのEnerGelのオレンジペンを持っています。", "en": "I have an orange Pentel EnerGel pen."},
+            {"id": 78, "jp": "あなたの定規はどのブランドですか？", "en": "What brand is your ruler?"},
+            {"id": 79, "jp": "彼女はTombowのMONO消しゴムを使います。", "en": "She uses a Tombow MONO eraser."},
+            {"id": 80, "jp": "そのノートはMoleskineの新作です。", "en": "That notebook is a new Moleskine model."},
+            {"id": 81, "jp": "私の好きなブランドはPILOTです。", "en": "My favorite brand is PILOT."},
+            {"id": 82, "jp": "あなたはLAMYのSafariを持っていますか？", "en": "Do you have a LAMY Safari?"},
+            {"id": 83, "jp": "私はZEBRAのMildlinerを2本持っています。", "en": "I have two ZEBRA Mildliners."},
+            {"id": 84, "jp": "彼はKOKUYOのAir Touchクリアファイルを使います。", "en": "He uses a KOKUYO Air Touch clear file."},
+            {"id": 85, "jp": "これはPentelのTouch Sign Penです。", "en": "This is a Pentel Touch Sign Pen."},
+            {"id": 86, "jp": "私のノートは無印良品のものです。", "en": "My notebook is from MUJI."},
+            {"id": 87, "jp": "あなたはどんなペンで書きますか？", "en": "What kind of pen do you write with?"},
+            {"id": 88, "jp": "彼女はSTAEDTLERの925 25製図用シャープペンを持っています。", "en": "She has a STAEDTLER 925 25 drafting pencil."},
+            {"id": 89, "jp": "その消しゴムはよく消えます。", "en": "That eraser erases well."},
+            {"id": 90, "jp": "私はPILOTのHi-Tec-Cを使います。", "en": "I use a PILOT Hi-Tec-C."},
+            {"id": 91, "jp": "あなたはFaber-CastellのPolychromos色鉛筆を持っていますか？", "en": "Do you have Faber-Castell Polychromos colored pencils?"},
+            {"id": 92, "jp": "私のペンはLAMYのSafariです。", "en": "My pen is a LAMY Safari."},
+            {"id": 93, "jp": "これはZEBRAのSarasa Clipです。", "en": "This is a ZEBRA Sarasa Clip."},
+            {"id": 94, "jp": "彼女はPentelのTouch Sign Penで絵を描きます。", "en": "She draws with a Pentel Touch Sign Pen."},
+            {"id": 95, "jp": "私はKOKUYOのCampusノートで勉強します。", "en": "I study with a KOKUYO Campus notebook."},
+            {"id": 96, "jp": "これはTombowのMONO修正テープです。", "en": "This is a Tombow MONO correction tape."},
+            {"id": 97, "jp": "そのペンはSTAEDTLERの製品ですか？", "en": "Is that pen a STAEDTLER product?"},
+            {"id": 98, "jp": "彼はPILOTのJuiceジェルペンを使います。", "en": "He uses a PILOT Juice gel pen."},
+            {"id": 99, "jp": "私の好きなノートブランドはKOKUYOです。", "en": "My favorite notebook brand is KOKUYO."},
+            {"id": 100, "jp": "私は世界中の文房具を集めたいです。", "en": "I want to collect stationery from all over the world."}
+        ];
+
+        // 中級問題（新しいブランドを含む）
+        const intermediateQuestions = [
+            {"id": 101, "jp": "私は野原工芸の万年筆を持っています。", "en": "I have a Nohara Kogei fountain pen."},
+            {"id": 102, "jp": "これは工房楔の革製ペンケースです。", "en": "This is a Koubou Kusabi leather pencil case."},
+            {"id": 103, "jp": "私のLAMYのVistaは透明です。", "en": "My LAMY Vista is transparent."},
+            {"id": 104, "jp": "彼女は野原工芸の蒔絵ペンを持っています。", "en": "She has a Nohara Kogei maki-e pen."},
+            {"id": 105, "jp": "工房楔の手帳は高品質です。", "en": "Koubou Kusabi planners are high quality."},
+            {"id": 106, "jp": "私はLAMYのJoyを使っています。", "en": "I use a LAMY Joy."},
+            {"id": 107, "jp": "野原工芸の万年筆は職人によって作られています。", "en": "Nohara Kogei fountain pens are made by craftsmen."},
+            {"id": 108, "jp": "これは工房楔の革製ノートカバーです。", "en": "This is a Koubou Kusabi leather notebook cover."},
+            {"id": 109, "jp": "彼のLAMYのCP1はシンプルなデザインです。", "en": "His LAMY CP1 has a simple design."},
+            {"id": 110, "jp": "私は野原工芸の漆塗りペンが好きです。", "en": "I like Nohara Kogei lacquer pens."},
+            {"id": 111, "jp": "工房楔のペンケースは丈夫です。", "en": "Koubou Kusabi pencil cases are durable."},
+            {"id": 112, "jp": "これはLAMYのDialog3です。", "en": "This is a LAMY Dialog3."},
+            {"id": 113, "jp": "野原工芸のペンは日本の伝統工芸です。", "en": "Nohara Kogei pens are Japanese traditional crafts."},
+            {"id": 114, "jp": "私は工房楔の手帳を毎日使います。", "en": "I use a Koubou Kusabi planner every day."},
+            {"id": 115, "jp": "彼女のLAMYのLogoはステンレス製です。", "en": "Her LAMY Logo is made of stainless steel."},
+            {"id": 116, "jp": "野原工芸の万年筆は贈り物に最適です。", "en": "Nohara Kogei fountain pens are perfect for gifts."},
+            {"id": 117, "jp": "工房楔の革製品は手作りです。", "en": "Koubou Kusabi leather products are handmade."},
+            {"id": 118, "jp": "これはLAMYのNexxです。", "en": "This is a LAMY Nexx."},
+            {"id": 119, "jp": "私は野原工芸の限定版ペンを集めています。", "en": "I collect limited edition Nohara Kogei pens."},
+            {"id": 120, "jp": "工房楔のペンケースは機能性が高いです。", "en": "Koubou Kusabi pencil cases are highly functional."},
+            {"id": 121, "jp": "そのLAMYのAionはアルミニウム製です。", "en": "That LAMY Aion is made of aluminum."},
+            {"id": 122, "jp": "野原工芸の蒔絵技術は素晴らしいです。", "en": "Nohara Kogei maki-e techniques are wonderful."},
+            {"id": 123, "jp": "私は工房楔のパスポートケースを持っています。", "en": "I have a Koubou Kusabi passport case."},
+            {"id": 124, "jp": "このLAMYのScalaは高級感があります。", "en": "This LAMY Scala has a luxurious feel."},
+            {"id": 125, "jp": "野原工芸の万年筆は書き心地が良いです。", "en": "Nohara Kogei fountain pens have a good writing feel."},
+            {"id": 126, "jp": "工房楔の革は柔らかいです。", "en": "Koubou Kusabi leather is soft."},
+            {"id": 127, "jp": "私はLAMYのAccentを使っています。", "en": "I use a LAMY Accent."},
+            {"id": 128, "jp": "野原工芸のペンは職人の技術の結晶です。", "en": "Nohara Kogei pens are the crystallization of craftsman skills."},
+            {"id": 129, "jp": "これは工房楔のペンポーチです。", "en": "This is a Koubou Kusabi pen pouch."},
+            {"id": 130, "jp": "彼のLAMYのImporiumは高価です。", "en": "His LAMY Imporium is expensive."},
+            {"id": 131, "jp": "私は野原工芸の蒔絵ペンを購入しました。", "en": "I purchased a Nohara Kogei maki-e pen."},
+            {"id": 132, "jp": "工房楔の手帳は美しいデザインです。", "en": "Koubou Kusabi planners have beautiful designs."},
+            {"id": 133, "jp": "このLAMYのStudioはエレガントです。", "en": "This LAMY Studio is elegant."},
+            {"id": 134, "jp": "野原工芸の万年筆はコレクターに人気です。", "en": "Nohara Kogei fountain pens are popular with collectors."},
+            {"id": 135, "jp": "私は工房楔のカードケースを持っています。", "en": "I have a Koubou Kusabi card case."},
+            {"id": 136, "jp": "そのLAMYのPurはプラスチック製です。", "en": "That LAMY Pur is made of plastic."},
+            {"id": 137, "jp": "野原工芸の漆塗り技術は伝統的です。", "en": "Nohara Kogei lacquer techniques are traditional."},
+            {"id": 138, "jp": "工房楔の製品は長持ちします。", "en": "Koubou Kusabi products last long."},
+            {"id": 139, "jp": "これはLAMYのAL-starです。", "en": "This is a LAMY AL-star."},
+            {"id": 140, "jp": "私は野原工芸の限定版を探しています。", "en": "I am looking for a limited edition Nohara Kogei."},
+            {"id": 141, "jp": "工房楔の革製品は手入れが必要です。", "en": "Koubou Kusabi leather products require care."},
+            {"id": 142, "jp": "そのLAMYのVistaは実用的です。", "en": "That LAMY Vista is practical."},
+            {"id": 143, "jp": "野原工芸の蒔絵は芸術作品です。", "en": "Nohara Kogei maki-e is an artwork."},
+            {"id": 144, "jp": "私は工房楔のノートカバーを買いました。", "en": "I bought a Koubou Kusabi notebook cover."},
+            {"id": 145, "jp": "このLAMYのJoyはカリグラフィー用です。", "en": "This LAMY Joy is for calligraphy."},
+            {"id": 146, "jp": "野原工芸の万年筆は日本文化を反映しています。", "en": "Nohara Kogei fountain pens reflect Japanese culture."},
+            {"id": 147, "jp": "工房楔の手帳は機能性とデザイン性を兼ね備えています。", "en": "Koubou Kusabi planners combine functionality and design."},
+            {"id": 148, "jp": "私はLAMYのLogoが好きです。", "en": "I like the LAMY Logo."},
+            {"id": 149, "jp": "野原工芸のペンは特別な贈り物です。", "en": "Nohara Kogei pens are special gifts."},
+            {"id": 150, "jp": "これは工房楔の革製ペンケースです。", "en": "This is a Koubou Kusabi leather pencil case."},
+            {"id": 151, "jp": "そのLAMYのDialog3は回転式です。", "en": "That LAMY Dialog3 is a twist-action pen."},
+            {"id": 152, "jp": "私は野原工芸の蒔絵技術に興味があります。", "en": "I am interested in Nohara Kogei maki-e techniques."},
+            {"id": 153, "jp": "工房楔の製品は職人の手で作られています。", "en": "Koubou Kusabi products are made by craftsmen's hands."},
+            {"id": 154, "jp": "このLAMYのNexxは軽量です。", "en": "This LAMY Nexx is lightweight."},
+            {"id": 155, "jp": "野原工芸の万年筆は伝統と革新の融合です。", "en": "Nohara Kogei fountain pens are a fusion of tradition and innovation."},
+            {"id": 156, "jp": "私は工房楔のパスポートケースを使っています。", "en": "I use a Koubou Kusabi passport case."},
+            {"id": 157, "jp": "そのLAMYのAionは洗練されたデザインです。", "en": "That LAMY Aion has a refined design."},
+            {"id": 158, "jp": "野原工芸の漆塗りペンは美しいです。", "en": "Nohara Kogei lacquer pens are beautiful."},
+            {"id": 159, "jp": "工房楔の手帳は持ちやすいです。", "en": "Koubou Kusabi planners are easy to carry."},
+            {"id": 160, "jp": "これはLAMYのScalaです。", "en": "This is a LAMY Scala."},
+            {"id": 161, "jp": "私は野原工芸の限定版コレクションを持っています。", "en": "I have a limited edition Nohara Kogei collection."},
+            {"id": 162, "jp": "工房楔の革製品は時間とともに味が出ます。", "en": "Koubou Kusabi leather products develop character over time."},
+            {"id": 163, "jp": "そのLAMYのAccentは交換可能なグリップです。", "en": "That LAMY Accent has an interchangeable grip."},
+            {"id": 164, "jp": "野原工芸の蒔絵は細かい作業です。", "en": "Nohara Kogei maki-e is detailed work."},
+            {"id": 165, "jp": "私は工房楔のペンポーチを持っています。", "en": "I have a Koubou Kusabi pen pouch."},
+            {"id": 166, "jp": "このLAMYのImporiumはプレミアムモデルです。", "en": "This LAMY Imporium is a premium model."},
+            {"id": 167, "jp": "野原工芸の万年筆は書き味が滑らかです。", "en": "Nohara Kogei fountain pens write smoothly."},
+            {"id": 168, "jp": "工房楔のカードケースはコンパクトです。", "en": "Koubou Kusabi card cases are compact."},
+            {"id": 169, "jp": "そのLAMYのPurはカラフルです。", "en": "That LAMY Pur is colorful."},
+            {"id": 170, "jp": "私は野原工芸の伝統工芸に感動しました。", "en": "I was moved by Nohara Kogei traditional crafts."},
+            {"id": 171, "jp": "工房楔の製品は丁寧に作られています。", "en": "Koubou Kusabi products are carefully made."},
+            {"id": 172, "jp": "これはLAMYのAL-starです。", "en": "This is a LAMY AL-star."},
+            {"id": 173, "jp": "野原工芸の蒔絵ペンは一点一点異なります。", "en": "Each Nohara Kogei maki-e pen is unique."},
+            {"id": 174, "jp": "私は工房楔の手帳を愛用しています。", "en": "I love using Koubou Kusabi planners."},
+            {"id": 175, "jp": "そのLAMYのVistaは透明なボディです。", "en": "That LAMY Vista has a transparent body."},
+            {"id": 176, "jp": "野原工芸の万年筆は職人の誇りです。", "en": "Nohara Kogei fountain pens are a craftsman's pride."},
+            {"id": 177, "jp": "工房楔の革は高級感があります。", "en": "Koubou Kusabi leather has a luxurious feel."},
+            {"id": 178, "jp": "このLAMYのJoyは筆記用に最適です。", "en": "This LAMY Joy is perfect for writing."},
+            {"id": 179, "jp": "私は野原工芸の蒔絵を見るのが好きです。", "en": "I like looking at Nohara Kogei maki-e."},
+            {"id": 180, "jp": "工房楔のノートカバーは保護機能があります。", "en": "Koubou Kusabi notebook covers have protective functions."},
+            {"id": 181, "jp": "そのLAMYのLogoはシンプルなデザインです。", "en": "That LAMY Logo has a simple design."},
+            {"id": 182, "jp": "野原工芸の漆塗りは何層にも重ねられています。", "en": "Nohara Kogei lacquer is applied in multiple layers."},
+            {"id": 183, "jp": "私は工房楔のペンケースを毎日使います。", "en": "I use a Koubou Kusabi pencil case every day."},
+            {"id": 184, "jp": "これはLAMYのDialog3です。", "en": "This is a LAMY Dialog3."},
+            {"id": 185, "jp": "野原工芸の万年筆は世代を超えて愛されています。", "en": "Nohara Kogei fountain pens are loved across generations."},
+            {"id": 186, "jp": "工房楔の手帳は実用的です。", "en": "Koubou Kusabi planners are practical."},
+            {"id": 187, "jp": "そのLAMYのNexxはエルゴノミックデザインです。", "en": "That LAMY Nexx has an ergonomic design."},
+            {"id": 188, "jp": "私は野原工芸の限定版を探しています。", "en": "I am searching for a limited edition Nohara Kogei."},
+            {"id": 189, "jp": "工房楔のパスポートケースは旅行に便利です。", "en": "Koubou Kusabi passport cases are convenient for travel."},
+            {"id": 190, "jp": "このLAMYのAionは現代的なデザインです。", "en": "This LAMY Aion has a modern design."},
+            {"id": 191, "jp": "野原工芸の蒔絵技術は後世に伝えられています。", "en": "Nohara Kogei maki-e techniques are passed down to future generations."},
+            {"id": 192, "jp": "私は工房楔のカードケースを購入しました。", "en": "I purchased a Koubou Kusabi card case."},
+            {"id": 193, "jp": "そのLAMYのScalaは高級感があります。", "en": "That LAMY Scala has a luxurious feel."},
+            {"id": 194, "jp": "野原工芸の万年筆は手作業で作られます。", "en": "Nohara Kogei fountain pens are made by hand."},
+            {"id": 195, "jp": "工房楔の革製品は一生ものです。", "en": "Koubou Kusabi leather products last a lifetime."},
+            {"id": 196, "jp": "これはLAMYのAccentです。", "en": "This is a LAMY Accent."},
+            {"id": 197, "jp": "私は野原工芸の漆塗りペンをコレクションしています。", "en": "I collect Nohara Kogei lacquer pens."},
+            {"id": 198, "jp": "工房楔のペンポーチは収納力があります。", "en": "Koubou Kusabi pen pouches have good storage capacity."},
+            {"id": 199, "jp": "そのLAMYのImporiumは最高級モデルです。", "en": "That LAMY Imporium is the top model."},
+            {"id": 200, "jp": "野原工芸と工房楔は日本の職人技術を代表しています。", "en": "Nohara Kogei and Koubou Kusabi represent Japanese craftsmanship."}
+        ];
+
+        let currentLevel = null;
+        let rawQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let hintsUsed = 0;
+        let maxStreak = 0;
+        let hasAnswered = false;
+        let hintRevealedThisQuestion = false;
+        let currentSentenceTokens = [];
+        let wordBankTokens = [];
+        let assembledTokens = [];
+        let draggingTokenId = null;
+        let dragSource = null;
+        let activePointerId = null;
+        let dragGhost = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let pointerDragActive = false;
+        let pointerDragJustFinished = false;
+        let wrongAnswers = [];
+
+        const levelSelection = document.getElementById('level-selection');
+        const quizContainer = document.getElementById('quiz-container');
+        const reviewContainer = document.getElementById('review-container');
+        const beginnerBtn = document.getElementById('beginner-btn');
+        const intermediateBtn = document.getElementById('intermediate-btn');
+        const backToLevelsBtn = document.getElementById('back-to-levels');
+        const currentLevelSpan = document.getElementById('current-level');
+        const reviewWrongBtn = document.getElementById('review-wrong-btn');
+        const closeReviewBtn = document.getElementById('close-review');
+        const reviewList = document.getElementById('review-list');
+        const quizApp = document.querySelector('main');
+        const progressDisplay = document.getElementById('progress');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('score-display');
+        const streakDisplay = document.getElementById('streak-display');
+        const hintUsageDisplay = document.getElementById('hint-usage');
+        const japaneseText = document.getElementById('japanese-text');
+        const checkButton = document.getElementById('check-button');
+        const nextButton = document.getElementById('next-button');
+        const feedbackArea = document.getElementById('feedback-area');
+        const answerBox = document.getElementById('answer-box');
+        const correctAnswerText = document.getElementById('correct-answer');
+        const hintButton = document.getElementById('hint-button');
+        const hintText = document.getElementById('hint-text');
+        const wordBankContainer = document.getElementById('word-bank');
+        const assembledContainer = document.getElementById('assembled-answer');
+        const confettiContainer = document.getElementById('confetti-container');
+
+        let questions = [];
+        let totalQuestions = 0;
+
+        // DOMが読み込まれた後に初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初期状態を設定
+            levelSelection.classList.remove('hidden');
+            quizContainer.classList.add('hidden');
+            reviewContainer.classList.add('hidden');
+        });
+
+        beginnerBtn.addEventListener('click', () => startQuiz('beginner'));
+        intermediateBtn.addEventListener('click', () => startQuiz('intermediate'));
+        backToLevelsBtn.addEventListener('click', () => {
+            if (confirm('レベル選択に戻りますか？現在の進捗は失われます。')) {
+                resetQuiz();
+                levelSelection.classList.remove('hidden');
+                quizContainer.classList.add('hidden');
+                reviewContainer.classList.add('hidden');
+            }
+        });
+        reviewWrongBtn.addEventListener('click', () => {
+            reviewContainer.classList.remove('hidden');
+            quizContainer.classList.add('hidden');
+            displayReview();
+        });
+        closeReviewBtn.addEventListener('click', () => {
+            reviewContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+        });
+
+        function startQuiz(level) {
+            currentLevel = level;
+            rawQuestions = level === 'beginner' ? beginnerQuestions : intermediateQuestions;
+            questions = shuffle(rawQuestions.map(({ id, jp, en }) => ({ id, japanese: jp, english: en })));
+            totalQuestions = rawQuestions.length;
+            wrongAnswers = [];
+            
+            resetQuiz();
+            levelSelection.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            reviewContainer.classList.add('hidden');
+            
+            currentLevelSpan.textContent = level === 'beginner' ? '📚 初級' : '🎓 中級';
+            loadQuestion();
+            updateProgress();
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            streak = 0;
+            hintsUsed = 0;
+            maxStreak = 0;
+            wrongAnswers = [];
+            reviewWrongBtn.classList.add('hidden');
+        }
+
+        function shuffle(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function tokenizeSentence(sentence) {
+            return sentence.split(' ').filter(Boolean);
+        }
+
+        function generateHint(question) {
+            const brandMatches = question.japanese.match(/[A-Za-z][A-Za-z-]*/g);
+            if (brandMatches && brandMatches.length > 0) {
+                const unique = [...new Set(brandMatches.map((word) => word.replace(/[^A-Za-z-]/g, '')))].filter(Boolean);
+                if (unique.length > 0) {
+                    return `ブランドヒント: ${unique.join(', ')}`;
+                }
+            }
+            return 'キーワードとなる名詞に注目してみましょう。';
+        }
+
+        function createTokenObjects(tokens, questionId) {
+            return tokens.map((text, index) => ({
+                id: `${questionId}-${index}-${Math.random().toString(36).slice(2, 8)}`,
+                text
+            }));
+        }
+
+        function attachTokenInteractions(button, tokenId, source) {
+            button.dataset.tokenId = tokenId;
+            button.dataset.tokenSource = source;
+            button.classList.add('token-button');
+
+            button.addEventListener('pointerdown', (event) => {
+                if (hasAnswered) return;
+                if (event.button !== undefined && event.button !== 0) return;
+                startPointerDrag(tokenId, source, event, button);
+            });
+
+            button.addEventListener('click', (event) => {
+                if (pointerDragJustFinished) {
+                    pointerDragJustFinished = false;
+                    event.preventDefault();
+                    return;
+                }
+                if (hasAnswered) return;
+                if (source === 'bank') {
+                    moveTokenToAnswer(tokenId);
+                } else {
+                    moveTokenBackToBank(tokenId);
+                }
+            });
+        }
+
+        function startPointerDrag(tokenId, source, event, element) {
+            draggingTokenId = tokenId;
+            dragSource = source;
+            activePointerId = event.pointerId;
+            pointerDragActive = false;
+            pointerDragJustFinished = false;
+            dragStartX = event.clientX;
+            dragStartY = event.clientY;
+
+            const rect = element.getBoundingClientRect();
+            dragOffsetX = event.clientX - rect.left;
+            dragOffsetY = event.clientY - rect.top;
+
+            dragGhost = element.cloneNode(true);
+            dragGhost.removeAttribute('id');
+            dragGhost.classList.add('pointer-events-none');
+            dragGhost.style.position = 'fixed';
+            dragGhost.style.left = `${rect.left}px`;
+            dragGhost.style.top = `${rect.top}px`;
+            dragGhost.style.width = `${rect.width}px`;
+            dragGhost.style.zIndex = '9999';
+            dragGhost.style.opacity = '0.9';
+            dragGhost.style.transform = 'scale(1.05)';
+            dragGhost.style.pointerEvents = 'none';
+            document.body.appendChild(dragGhost);
+
+            element.setPointerCapture(event.pointerId);
+            element.addEventListener('pointermove', handlePointerMove);
+            element.addEventListener('pointerup', endPointerDrag);
+            element.addEventListener('pointercancel', cancelPointerDrag);
+        }
+
+        function handlePointerMove(event) {
+            if (event.pointerId !== activePointerId || draggingTokenId === null || !dragGhost) {
+                return;
+            }
+
+            const deltaX = event.clientX - dragStartX;
+            const deltaY = event.clientY - dragStartY;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (!pointerDragActive && distance > 5) {
+                pointerDragActive = true;
+            }
+
+            if (pointerDragActive) {
+                event.preventDefault();
+                dragGhost.style.left = `${event.clientX - dragOffsetX}px`;
+                dragGhost.style.top = `${event.clientY - dragOffsetY}px`;
+            }
+        }
+
+        function endPointerDrag(event) {
+            if (event.pointerId !== activePointerId) return;
+            cleanupPointerListeners(event.currentTarget, event.pointerId);
+
+            if (!draggingTokenId) return;
+
+            const wasDragging = pointerDragActive;
+            pointerDragActive = false;
+            pointerDragJustFinished = wasDragging;
+
+            if (dragGhost) {
+                dragGhost.remove();
+                dragGhost = null;
+            }
+
+            if (!wasDragging) {
+                resetPointerDragState();
+                return;
+            }
+
+            const dropElement = document.elementFromPoint(event.clientX, event.clientY);
+            if (dropElement) {
+                const assembledArea = dropElement.closest('#assembled-answer');
+                const bankArea = dropElement.closest('#word-bank');
+
+                if (assembledArea) {
+                    const beforeToken = dropElement.closest('.token-button');
+                    const beforeId = beforeToken ? beforeToken.dataset.tokenId : null;
+                    moveTokenToAssembledAt(draggingTokenId, beforeId);
+                } else if (bankArea) {
+                    const beforeToken = dropElement.closest('.token-button');
+                    const beforeId = beforeToken ? beforeToken.dataset.tokenId : null;
+                    moveTokenToWordBankAt(draggingTokenId, beforeId);
+                } else {
+                    renderWordBank();
+                    renderAssembled();
+                    updateCheckButtonState();
+                }
+            }
+
+            resetPointerDragState();
+        }
+
+        function cancelPointerDrag(event) {
+            if (event.pointerId !== activePointerId) return;
+            cleanupPointerListeners(event.currentTarget, event.pointerId);
+
+            if (dragGhost) {
+                dragGhost.remove();
+                dragGhost = null;
+            }
+
+            pointerDragJustFinished = false;
+            resetPointerDragState();
+        }
+
+        function cleanupPointerListeners(target, pointerId) {
+            try {
+                target.releasePointerCapture(pointerId);
+            } catch (e) {
+                // ignore
+            }
+            target.removeEventListener('pointermove', handlePointerMove);
+            target.removeEventListener('pointerup', endPointerDrag);
+            target.removeEventListener('pointercancel', cancelPointerDrag);
+        }
+
+        function resetPointerDragState() {
+            draggingTokenId = null;
+            dragSource = null;
+            activePointerId = null;
+            dragOffsetX = 0;
+            dragOffsetY = 0;
+            dragStartX = 0;
+            dragStartY = 0;
+            pointerDragActive = false;
+        }
+
+        function moveTokenToAssembledAt(tokenId, beforeTokenId = null) {
+            if (beforeTokenId === tokenId) {
+                beforeTokenId = null;
+            }
+            const fromBankIndex = wordBankTokens.findIndex((token) => token.id === tokenId);
+            const fromAssembledIndex = assembledTokens.findIndex((token) => token.id === tokenId);
+
+            let token = null;
+            if (fromBankIndex !== -1) {
+                [token] = wordBankTokens.splice(fromBankIndex, 1);
+            } else if (fromAssembledIndex !== -1) {
+                [token] = assembledTokens.splice(fromAssembledIndex, 1);
+            } else {
+                return;
+            }
+
+            let insertIndex = beforeTokenId ? assembledTokens.findIndex((token) => token.id === beforeTokenId) : assembledTokens.length;
+            if (insertIndex === -1) {
+                insertIndex = assembledTokens.length;
+            }
+            assembledTokens.splice(insertIndex, 0, token);
+
+            renderWordBank();
+            renderAssembled();
+            updateCheckButtonState();
+        }
+
+        function moveTokenToWordBankAt(tokenId, beforeTokenId = null) {
+            if (beforeTokenId === tokenId) {
+                beforeTokenId = null;
+            }
+            const fromBankIndex = wordBankTokens.findIndex((token) => token.id === tokenId);
+            const fromAssembledIndex = assembledTokens.findIndex((token) => token.id === tokenId);
+
+            let token = null;
+            if (fromAssembledIndex !== -1) {
+                [token] = assembledTokens.splice(fromAssembledIndex, 1);
+            } else if (fromBankIndex !== -1) {
+                [token] = wordBankTokens.splice(fromBankIndex, 1);
+            } else {
+                return;
+            }
+
+            let insertIndex = beforeTokenId ? wordBankTokens.findIndex((token) => token.id === beforeTokenId) : wordBankTokens.length;
+            if (insertIndex === -1) {
+                insertIndex = wordBankTokens.length;
+            }
+            wordBankTokens.splice(insertIndex, 0, token);
+
+            renderWordBank();
+            renderAssembled();
+            updateCheckButtonState();
+        }
+
+        function renderWordBank() {
+            wordBankContainer.innerHTML = '';
+            wordBankTokens.forEach((token) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = token.text;
+                button.className = 'rounded-2xl border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-700 shadow-sm hover:border-brand-400 hover:shadow focus:outline-none transition';
+                attachTokenInteractions(button, token.id, 'bank');
+                if (hasAnswered) {
+                    button.classList.add('opacity-50', 'cursor-not-allowed');
+                    button.disabled = true;
+                }
+                wordBankContainer.appendChild(button);
+            });
+        }
+
+        function renderAssembled() {
+            assembledContainer.innerHTML = '';
+            if (assembledTokens.length === 0) {
+                const placeholder = document.createElement('p');
+                placeholder.className = 'text-xs text-slate-400';
+                placeholder.textContent = 'ここに並べた単語が表示されます';
+                assembledContainer.appendChild(placeholder);
+                return;
+            }
+
+            assembledTokens.forEach((token) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = token.text;
+                button.className = 'rounded-2xl border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 shadow-sm hover:border-brand-400 hover:shadow focus:outline-none transition';
+                attachTokenInteractions(button, token.id, 'assembled');
+                if (hasAnswered) {
+                    button.classList.add('opacity-50', 'cursor-not-allowed');
+                    button.disabled = true;
+                }
+                assembledContainer.appendChild(button);
+            });
+        }
+
+        function moveTokenToAnswer(tokenId) {
+            if (hasAnswered) return;
+            moveTokenToAssembledAt(tokenId, null);
+        }
+
+        function moveTokenBackToBank(tokenId) {
+            if (hasAnswered) return;
+            moveTokenToWordBankAt(tokenId, null);
+        }
+
+        function updateCheckButtonState() {
+            const ready = assembledTokens.length === currentSentenceTokens.length && currentSentenceTokens.length > 0;
+            checkButton.disabled = hasAnswered || !ready;
+        }
+
+        function updateProgress() {
+            const displayIndex = Math.min(currentQuestionIndex + 1, totalQuestions);
+            progressDisplay.textContent = `問 ${displayIndex} / ${totalQuestions}`;
+            const percentage = (currentQuestionIndex / totalQuestions) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showResults();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            japaneseText.textContent = question.japanese;
+
+            currentSentenceTokens = tokenizeSentence(question.english);
+            wordBankTokens = shuffle(createTokenObjects(currentSentenceTokens, question.id));
+            assembledTokens = [];
+            hasAnswered = false;
+            hintRevealedThisQuestion = false;
+
+            renderWordBank();
+            renderAssembled();
+            updateCheckButtonState();
+
+            hintText.textContent = generateHint(question);
+            hintText.classList.add('hidden');
+            hintButton.disabled = false;
+            hintButton.textContent = '💡 ヒントを見る';
+
+            checkButton.classList.remove('hidden');
+            nextButton.disabled = true;
+            nextButton.classList.add('hidden');
+
+            answerBox.classList.add('hidden');
+            feedbackArea.innerHTML = '';
+
+            updateProgress();
+        }
+
+        function showConfetti() {
+            const colors = ['#38bdf8', '#818cf8', '#f472b6', '#fbbf24', '#34d399'];
+            const pieceCount = 40;
+
+            for (let i = 0; i < pieceCount; i++) {
+                const piece = document.createElement('div');
+                const start = Math.random();
+                const end = start + (Math.random() * 0.2 - 0.1);
+
+                piece.className = 'confetti-piece';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.left = `${start * 100}%`;
+                piece.style.setProperty('--x-start', `${start * 100}vw`);
+                piece.style.setProperty('--x-end', `${end * 100}vw`);
+                piece.style.animation = `confettiFall ${Math.random() * 1.5 + 1.8}s linear forwards`;
+
+                confettiContainer.appendChild(piece);
+
+                setTimeout(() => piece.remove(), 2500);
+            }
+        }
+
+        function buildFeedback(isCorrect) {
+            if (isCorrect) {
+                const messages = [
+                    '完璧！その訳し方、とても自然です。',
+                    '素晴らしいセンス！次の問題もいけそうですね。',
+                    'ナイス翻訳！文房具愛が伝わります。'
+                ];
+                const compliment = messages[Math.floor(Math.random() * messages.length)];
+                return `
+                    <div class="rounded-2xl border-2 border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 p-6 md:p-8 shadow-lg slide-in">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="text-4xl">🎉</span>
+                            <p class="text-2xl font-black text-green-700">正解です！</p>
+                        </div>
+                        <p class="text-lg text-green-800 mb-4 font-medium">${compliment}</p>
+                        <div class="flex items-center gap-4 text-sm">
+                            <span class="px-3 py-1 rounded-full bg-green-200 text-green-800 font-semibold">連続正解: ${streak}問</span>
+                            <span class="px-3 py-1 rounded-full bg-green-200 text-green-800 font-semibold">スコア: ${score}問</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const tips = [
+                '単語の順序と冠詞をもう一度チェックしましょう。',
+                '複数形・単数形に注意して並べ替えてみてください。',
+                'ブランド名など固有名詞の位置を意識してみましょう。'
+            ];
+            const hint = tips[Math.floor(Math.random() * tips.length)];
+
+            return `
+                <div class="rounded-2xl border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-pink-50 p-6 md:p-8 shadow-lg slide-in">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-4xl">❗</span>
+                        <p class="text-2xl font-black text-rose-700">残念、不正解です。</p>
+                    </div>
+                    <p class="text-lg text-rose-800 mb-4 font-medium">${hint}</p>
+                    <div class="flex items-center gap-4 text-sm">
+                        <span class="px-3 py-1 rounded-full bg-rose-200 text-rose-800 font-semibold">連続正解: ${streak}問</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkAnswer() {
+            if (hasAnswered) return;
+
+            if (assembledTokens.length !== currentSentenceTokens.length) {
+                feedbackArea.innerHTML = `
+                    <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 md:p-5 shadow-sm text-amber-700">
+                        <p class="font-semibold">すべての単語を並べてから答えを確定しましょう。</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const userSentence = assembledTokens.map((token) => token.text).join(' ').trim();
+            const question = questions[currentQuestionIndex];
+            const correctSentence = question.english.trim();
+            const isCorrect = userSentence === correctSentence;
+
+            hasAnswered = true;
+
+            if (isCorrect) {
+                score++;
+                streak++;
+                maxStreak = Math.max(maxStreak, streak);
+                showConfetti();
+            } else {
+                streak = 0;
+                wrongAnswers.push({
+                    japanese: question.japanese,
+                    english: correctSentence,
+                    userAnswer: userSentence
+                });
+            }
+
+            feedbackArea.innerHTML = buildFeedback(isCorrect);
+            correctAnswerText.textContent = correctSentence;
+            answerBox.classList.remove('hidden');
+
+            renderWordBank();
+            renderAssembled();
+            updateCheckButtonState();
+
+            checkButton.classList.add('hidden');
+            nextButton.disabled = false;
+            nextButton.classList.remove('hidden');
+
+            scoreDisplay.textContent = `正解数: ${score}`;
+            streakDisplay.textContent = `連続正解: ${streak}`;
+
+            if (currentQuestionIndex === totalQuestions - 1) {
+                nextButton.textContent = '🎯 結果を見る';
+            } else {
+                nextButton.textContent = '➡️ 次の問題へ';
+            }
+
+            if (wrongAnswers.length > 0) {
+                reviewWrongBtn.classList.remove('hidden');
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function displayReview() {
+            if (wrongAnswers.length === 0) {
+                reviewList.innerHTML = '<p class="text-center text-slate-600 py-8">間違った問題はありません。素晴らしいです！✨</p>';
+                return;
+            }
+
+            reviewList.innerHTML = wrongAnswers.map((item, index) => `
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-lg font-bold text-slate-900">問題 ${index + 1}</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">日本語</p>
+                            <p class="text-lg text-slate-900">${item.japanese}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">正解</p>
+                            <p class="text-lg font-mono text-green-700 bg-green-50 p-3 rounded-lg">${item.english}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">あなたの答え</p>
+                            <p class="text-lg font-mono text-rose-700 bg-rose-50 p-3 rounded-lg">${item.userAnswer}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showResults() {
+            const accuracy = Math.round((score / totalQuestions) * 100);
+            quizContainer.innerHTML = `
+                <div class="glass-card rounded-3xl border border-white/60 px-6 py-12 md:px-12 md:py-16 shadow-xl text-center space-y-8">
+                    <h2 class="text-4xl font-black text-brand-600">チャレンジ完了！</h2>
+                    <p class="text-lg text-slate-600">お疲れさまでした。今回の結果はこちらです。</p>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+                        <div class="rounded-2xl border border-brand-100 bg-brand-50 px-10 py-8 shadow-inner">
+                            <p class="text-sm font-semibold text-brand-600 uppercase tracking-wide">スコア</p>
+                            <p class="mt-3 text-5xl font-black text-brand-700">${score} / ${totalQuestions}</p>
+                            <p class="mt-1 text-base text-brand-500">正答率 ${accuracy}%</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white px-8 py-6 shadow-inner space-y-3 text-left">
+                            <p class="text-sm text-slate-500 uppercase tracking-wide font-semibold">セッションメモ</p>
+                            <p class="text-base text-slate-700"><span class="font-semibold text-slate-900">ベスト連続正解:</span> ${maxStreak} 問</p>
+                            <p class="text-base text-slate-700"><span class="font-semibold text-slate-900">ヒント使用:</span> ${hintsUsed} 回</p>
+                            <p class="text-base text-slate-700"><span class="font-semibold text-slate-900">間違った問題:</span> ${wrongAnswers.length} 問</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <p class="text-slate-600">もう一度挑戦してスコア更新にチャレンジしましょう。</p>
+                        <div class="flex flex-col md:flex-row gap-3 justify-center">
+                            ${wrongAnswers.length > 0 ? `<button onclick="window.location.reload()" class="inline-flex items-center gap-2 rounded-2xl bg-rose-600 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-rose-700 transition">📝 間違った問題を確認する</button>` : ''}
+                            <button onclick="window.location.reload()" class="inline-flex items-center gap-2 rounded-2xl bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-brand-700 transition">🔁 もう一度挑戦する</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 結果画面の間違った問題ボタンにイベントを追加
+            setTimeout(() => {
+                const reviewBtn = document.querySelector('button[onclick*="間違った問題"]');
+                if (reviewBtn) {
+                    reviewBtn.onclick = () => {
+                        quizContainer.innerHTML = '';
+                        reviewContainer.classList.remove('hidden');
+                        displayReview();
+                    };
+                }
+            }, 100);
+        }
+
+        hintButton.addEventListener('click', () => {
+            const isHidden = hintText.classList.contains('hidden');
+            if (isHidden) {
+                hintText.classList.remove('hidden');
+                hintButton.textContent = '🙈 ヒントを隠す';
+                if (!hintRevealedThisQuestion) {
+                    hintRevealedThisQuestion = true;
+                    hintsUsed++;
+                    hintUsageDisplay.textContent = `ヒント使用: ${hintsUsed}`;
+                }
+            } else {
+                hintText.classList.add('hidden');
+                hintButton.textContent = '💡 ヒントを見る';
+            }
+        });
+
+        checkButton.addEventListener('click', checkAnswer);
+        nextButton.addEventListener('click', nextQuestion);
+    </script>
+</body>
+</html>
