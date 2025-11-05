@@ -172,9 +172,9 @@
 
                 <div id="feedback-area" class="min-h-[6rem] transition-all duration-500"></div>
 
-                <div id="answer-box" class="hidden rounded-2xl border border-green-200 bg-green-50/80 p-5 shadow-inner space-y-3">
-                    <p class="text-sm font-semibold text-green-600 uppercase tracking-wide">正解</p>
-                    <p id="correct-answer" class="font-mono text-lg text-green-900"></p>
+                <div id="answer-box" class="hidden rounded-2xl border-2 border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 p-6 shadow-lg space-y-3">
+                    <p class="text-base font-bold text-green-700 uppercase tracking-wide">✓ 正解</p>
+                    <p id="correct-answer" class="font-mono text-xl text-green-900 font-semibold bg-white p-4 rounded-lg border border-green-200"></p>
                 </div>
             </section>
 
@@ -302,108 +302,108 @@
             {"id": 100, "jp": "私は世界中の文房具を集めたいです。", "en": "I want to collect stationery from all over the world."}
         ];
 
-        // 中級問題（新しいブランドを含む）
+        // 中級問題（JSONデータから生成）
         const intermediateQuestions = [
-            {"id": 101, "jp": "私は野原工芸の万年筆を持っています。", "en": "I have a Nohara Kogei fountain pen."},
-            {"id": 102, "jp": "これは工房楔の革製ペンケースです。", "en": "This is a Koubou Kusabi leather pencil case."},
-            {"id": 103, "jp": "私のLAMYのVistaは透明です。", "en": "My LAMY Vista is transparent."},
-            {"id": 104, "jp": "彼女は野原工芸の蒔絵ペンを持っています。", "en": "She has a Nohara Kogei maki-e pen."},
-            {"id": 105, "jp": "工房楔の手帳は高品質です。", "en": "Koubou Kusabi planners are high quality."},
-            {"id": 106, "jp": "私はLAMYのJoyを使っています。", "en": "I use a LAMY Joy."},
-            {"id": 107, "jp": "野原工芸の万年筆は職人によって作られています。", "en": "Nohara Kogei fountain pens are made by craftsmen."},
-            {"id": 108, "jp": "これは工房楔の革製ノートカバーです。", "en": "This is a Koubou Kusabi leather notebook cover."},
-            {"id": 109, "jp": "彼のLAMYのCP1はシンプルなデザインです。", "en": "His LAMY CP1 has a simple design."},
-            {"id": 110, "jp": "私は野原工芸の漆塗りペンが好きです。", "en": "I like Nohara Kogei lacquer pens."},
-            {"id": 111, "jp": "工房楔のペンケースは丈夫です。", "en": "Koubou Kusabi pencil cases are durable."},
-            {"id": 112, "jp": "これはLAMYのDialog3です。", "en": "This is a LAMY Dialog3."},
-            {"id": 113, "jp": "野原工芸のペンは日本の伝統工芸です。", "en": "Nohara Kogei pens are Japanese traditional crafts."},
-            {"id": 114, "jp": "私は工房楔の手帳を毎日使います。", "en": "I use a Koubou Kusabi planner every day."},
-            {"id": 115, "jp": "彼女のLAMYのLogoはステンレス製です。", "en": "Her LAMY Logo is made of stainless steel."},
-            {"id": 116, "jp": "野原工芸の万年筆は贈り物に最適です。", "en": "Nohara Kogei fountain pens are perfect for gifts."},
-            {"id": 117, "jp": "工房楔の革製品は手作りです。", "en": "Koubou Kusabi leather products are handmade."},
-            {"id": 118, "jp": "これはLAMYのNexxです。", "en": "This is a LAMY Nexx."},
-            {"id": 119, "jp": "私は野原工芸の限定版ペンを集めています。", "en": "I collect limited edition Nohara Kogei pens."},
-            {"id": 120, "jp": "工房楔のペンケースは機能性が高いです。", "en": "Koubou Kusabi pencil cases are highly functional."},
-            {"id": 121, "jp": "そのLAMYのAionはアルミニウム製です。", "en": "That LAMY Aion is made of aluminum."},
-            {"id": 122, "jp": "野原工芸の蒔絵技術は素晴らしいです。", "en": "Nohara Kogei maki-e techniques are wonderful."},
-            {"id": 123, "jp": "私は工房楔のパスポートケースを持っています。", "en": "I have a Koubou Kusabi passport case."},
-            {"id": 124, "jp": "このLAMYのScalaは高級感があります。", "en": "This LAMY Scala has a luxurious feel."},
-            {"id": 125, "jp": "野原工芸の万年筆は書き心地が良いです。", "en": "Nohara Kogei fountain pens have a good writing feel."},
-            {"id": 126, "jp": "工房楔の革は柔らかいです。", "en": "Koubou Kusabi leather is soft."},
-            {"id": 127, "jp": "私はLAMYのAccentを使っています。", "en": "I use a LAMY Accent."},
-            {"id": 128, "jp": "野原工芸のペンは職人の技術の結晶です。", "en": "Nohara Kogei pens are the crystallization of craftsman skills."},
-            {"id": 129, "jp": "これは工房楔のペンポーチです。", "en": "This is a Koubou Kusabi pen pouch."},
-            {"id": 130, "jp": "彼のLAMYのImporiumは高価です。", "en": "His LAMY Imporium is expensive."},
-            {"id": 131, "jp": "私は野原工芸の蒔絵ペンを購入しました。", "en": "I purchased a Nohara Kogei maki-e pen."},
-            {"id": 132, "jp": "工房楔の手帳は美しいデザインです。", "en": "Koubou Kusabi planners have beautiful designs."},
-            {"id": 133, "jp": "このLAMYのStudioはエレガントです。", "en": "This LAMY Studio is elegant."},
-            {"id": 134, "jp": "野原工芸の万年筆はコレクターに人気です。", "en": "Nohara Kogei fountain pens are popular with collectors."},
-            {"id": 135, "jp": "私は工房楔のカードケースを持っています。", "en": "I have a Koubou Kusabi card case."},
-            {"id": 136, "jp": "そのLAMYのPurはプラスチック製です。", "en": "That LAMY Pur is made of plastic."},
-            {"id": 137, "jp": "野原工芸の漆塗り技術は伝統的です。", "en": "Nohara Kogei lacquer techniques are traditional."},
-            {"id": 138, "jp": "工房楔の製品は長持ちします。", "en": "Koubou Kusabi products last long."},
-            {"id": 139, "jp": "これはLAMYのAL-starです。", "en": "This is a LAMY AL-star."},
-            {"id": 140, "jp": "私は野原工芸の限定版を探しています。", "en": "I am looking for a limited edition Nohara Kogei."},
-            {"id": 141, "jp": "工房楔の革製品は手入れが必要です。", "en": "Koubou Kusabi leather products require care."},
-            {"id": 142, "jp": "そのLAMYのVistaは実用的です。", "en": "That LAMY Vista is practical."},
-            {"id": 143, "jp": "野原工芸の蒔絵は芸術作品です。", "en": "Nohara Kogei maki-e is an artwork."},
-            {"id": 144, "jp": "私は工房楔のノートカバーを買いました。", "en": "I bought a Koubou Kusabi notebook cover."},
-            {"id": 145, "jp": "このLAMYのJoyはカリグラフィー用です。", "en": "This LAMY Joy is for calligraphy."},
-            {"id": 146, "jp": "野原工芸の万年筆は日本文化を反映しています。", "en": "Nohara Kogei fountain pens reflect Japanese culture."},
-            {"id": 147, "jp": "工房楔の手帳は機能性とデザイン性を兼ね備えています。", "en": "Koubou Kusabi planners combine functionality and design."},
-            {"id": 148, "jp": "私はLAMYのLogoが好きです。", "en": "I like the LAMY Logo."},
-            {"id": 149, "jp": "野原工芸のペンは特別な贈り物です。", "en": "Nohara Kogei pens are special gifts."},
-            {"id": 150, "jp": "これは工房楔の革製ペンケースです。", "en": "This is a Koubou Kusabi leather pencil case."},
-            {"id": 151, "jp": "そのLAMYのDialog3は回転式です。", "en": "That LAMY Dialog3 is a twist-action pen."},
-            {"id": 152, "jp": "私は野原工芸の蒔絵技術に興味があります。", "en": "I am interested in Nohara Kogei maki-e techniques."},
-            {"id": 153, "jp": "工房楔の製品は職人の手で作られています。", "en": "Koubou Kusabi products are made by craftsmen's hands."},
-            {"id": 154, "jp": "このLAMYのNexxは軽量です。", "en": "This LAMY Nexx is lightweight."},
-            {"id": 155, "jp": "野原工芸の万年筆は伝統と革新の融合です。", "en": "Nohara Kogei fountain pens are a fusion of tradition and innovation."},
-            {"id": 156, "jp": "私は工房楔のパスポートケースを使っています。", "en": "I use a Koubou Kusabi passport case."},
-            {"id": 157, "jp": "そのLAMYのAionは洗練されたデザインです。", "en": "That LAMY Aion has a refined design."},
-            {"id": 158, "jp": "野原工芸の漆塗りペンは美しいです。", "en": "Nohara Kogei lacquer pens are beautiful."},
-            {"id": 159, "jp": "工房楔の手帳は持ちやすいです。", "en": "Koubou Kusabi planners are easy to carry."},
-            {"id": 160, "jp": "これはLAMYのScalaです。", "en": "This is a LAMY Scala."},
-            {"id": 161, "jp": "私は野原工芸の限定版コレクションを持っています。", "en": "I have a limited edition Nohara Kogei collection."},
-            {"id": 162, "jp": "工房楔の革製品は時間とともに味が出ます。", "en": "Koubou Kusabi leather products develop character over time."},
-            {"id": 163, "jp": "そのLAMYのAccentは交換可能なグリップです。", "en": "That LAMY Accent has an interchangeable grip."},
-            {"id": 164, "jp": "野原工芸の蒔絵は細かい作業です。", "en": "Nohara Kogei maki-e is detailed work."},
-            {"id": 165, "jp": "私は工房楔のペンポーチを持っています。", "en": "I have a Koubou Kusabi pen pouch."},
-            {"id": 166, "jp": "このLAMYのImporiumはプレミアムモデルです。", "en": "This LAMY Imporium is a premium model."},
-            {"id": 167, "jp": "野原工芸の万年筆は書き味が滑らかです。", "en": "Nohara Kogei fountain pens write smoothly."},
-            {"id": 168, "jp": "工房楔のカードケースはコンパクトです。", "en": "Koubou Kusabi card cases are compact."},
-            {"id": 169, "jp": "そのLAMYのPurはカラフルです。", "en": "That LAMY Pur is colorful."},
-            {"id": 170, "jp": "私は野原工芸の伝統工芸に感動しました。", "en": "I was moved by Nohara Kogei traditional crafts."},
-            {"id": 171, "jp": "工房楔の製品は丁寧に作られています。", "en": "Koubou Kusabi products are carefully made."},
-            {"id": 172, "jp": "これはLAMYのAL-starです。", "en": "This is a LAMY AL-star."},
-            {"id": 173, "jp": "野原工芸の蒔絵ペンは一点一点異なります。", "en": "Each Nohara Kogei maki-e pen is unique."},
-            {"id": 174, "jp": "私は工房楔の手帳を愛用しています。", "en": "I love using Koubou Kusabi planners."},
-            {"id": 175, "jp": "そのLAMYのVistaは透明なボディです。", "en": "That LAMY Vista has a transparent body."},
-            {"id": 176, "jp": "野原工芸の万年筆は職人の誇りです。", "en": "Nohara Kogei fountain pens are a craftsman's pride."},
-            {"id": 177, "jp": "工房楔の革は高級感があります。", "en": "Koubou Kusabi leather has a luxurious feel."},
-            {"id": 178, "jp": "このLAMYのJoyは筆記用に最適です。", "en": "This LAMY Joy is perfect for writing."},
-            {"id": 179, "jp": "私は野原工芸の蒔絵を見るのが好きです。", "en": "I like looking at Nohara Kogei maki-e."},
-            {"id": 180, "jp": "工房楔のノートカバーは保護機能があります。", "en": "Koubou Kusabi notebook covers have protective functions."},
-            {"id": 181, "jp": "そのLAMYのLogoはシンプルなデザインです。", "en": "That LAMY Logo has a simple design."},
-            {"id": 182, "jp": "野原工芸の漆塗りは何層にも重ねられています。", "en": "Nohara Kogei lacquer is applied in multiple layers."},
-            {"id": 183, "jp": "私は工房楔のペンケースを毎日使います。", "en": "I use a Koubou Kusabi pencil case every day."},
-            {"id": 184, "jp": "これはLAMYのDialog3です。", "en": "This is a LAMY Dialog3."},
-            {"id": 185, "jp": "野原工芸の万年筆は世代を超えて愛されています。", "en": "Nohara Kogei fountain pens are loved across generations."},
-            {"id": 186, "jp": "工房楔の手帳は実用的です。", "en": "Koubou Kusabi planners are practical."},
-            {"id": 187, "jp": "そのLAMYのNexxはエルゴノミックデザインです。", "en": "That LAMY Nexx has an ergonomic design."},
-            {"id": 188, "jp": "私は野原工芸の限定版を探しています。", "en": "I am searching for a limited edition Nohara Kogei."},
-            {"id": 189, "jp": "工房楔のパスポートケースは旅行に便利です。", "en": "Koubou Kusabi passport cases are convenient for travel."},
-            {"id": 190, "jp": "このLAMYのAionは現代的なデザインです。", "en": "This LAMY Aion has a modern design."},
-            {"id": 191, "jp": "野原工芸の蒔絵技術は後世に伝えられています。", "en": "Nohara Kogei maki-e techniques are passed down to future generations."},
-            {"id": 192, "jp": "私は工房楔のカードケースを購入しました。", "en": "I purchased a Koubou Kusabi card case."},
-            {"id": 193, "jp": "そのLAMYのScalaは高級感があります。", "en": "That LAMY Scala has a luxurious feel."},
-            {"id": 194, "jp": "野原工芸の万年筆は手作業で作られます。", "en": "Nohara Kogei fountain pens are made by hand."},
-            {"id": 195, "jp": "工房楔の革製品は一生ものです。", "en": "Koubou Kusabi leather products last a lifetime."},
-            {"id": 196, "jp": "これはLAMYのAccentです。", "en": "This is a LAMY Accent."},
-            {"id": 197, "jp": "私は野原工芸の漆塗りペンをコレクションしています。", "en": "I collect Nohara Kogei lacquer pens."},
-            {"id": 198, "jp": "工房楔のペンポーチは収納力があります。", "en": "Koubou Kusabi pen pouches have good storage capacity."},
-            {"id": 199, "jp": "そのLAMYのImporiumは最高級モデルです。", "en": "That LAMY Imporium is the top model."},
-            {"id": 200, "jp": "野原工芸と工房楔は日本の職人技術を代表しています。", "en": "Nohara Kogei and Koubou Kusabi represent Japanese craftsmanship."}
+            {"id": 101, "jp": "私はPILOTのFriXion Ball 0.5を持っています。", "en": "I have a PILOT FriXion Ball 0.5."},
+            {"id": 102, "jp": "これはPILOTのJuice Gel Pen 0.4です。", "en": "This is a PILOT Juice Gel Pen 0.4."},
+            {"id": 103, "jp": "私のPILOTのCapless Decimoは便利です。", "en": "My PILOT Capless Decimo is convenient."},
+            {"id": 104, "jp": "私はZEBRAのSarasa Clip 0.5を使っています。", "en": "I use a ZEBRA Sarasa Clip 0.5."},
+            {"id": 105, "jp": "彼女はZEBRAのMildliner Highlighterを持っています。", "en": "She has a ZEBRA Mildliner Highlighter."},
+            {"id": 106, "jp": "これはZEBRAのDelGuard Mechanical Pencilです。", "en": "This is a ZEBRA DelGuard Mechanical Pencil."},
+            {"id": 107, "jp": "私はuniのJetstream Edge 0.28が好きです。", "en": "I like the uni Jetstream Edge 0.28."},
+            {"id": 108, "jp": "彼はuniのKuru Toga Advanceを使っています。", "en": "He uses a uni Kuru Toga Advance."},
+            {"id": 109, "jp": "これはuniのSigno RT1ですか？", "en": "Is this a uni Signo RT1?"},
+            {"id": 110, "jp": "私はTombowのMONO Graph Liteを持っています。", "en": "I have a Tombow MONO Graph Lite."},
+            {"id": 111, "jp": "彼女はTombowのABT Dual Brush Penを使っています。", "en": "She uses a Tombow ABT Dual Brush Pen."},
+            {"id": 112, "jp": "これはTombowのMono One Eraserです。", "en": "This is a Tombow Mono One Eraser."},
+            {"id": 113, "jp": "私はLAMYのSafari Fountain Penを買いました。", "en": "I bought a LAMY Safari Fountain Pen."},
+            {"id": 114, "jp": "これはLAMYのAL-star Mechanical Pencilです。", "en": "This is a LAMY AL-star Mechanical Pencil."},
+            {"id": 115, "jp": "私のLAMYの2000 Fountain Penは高級です。", "en": "My LAMY 2000 Fountain Pen is premium."},
+            {"id": 116, "jp": "私はKOKUYOのCampus Notebook B5を使っています。", "en": "I use a KOKUYO Campus Notebook B5."},
+            {"id": 117, "jp": "これはKOKUYOのSmartRing Binderです。", "en": "This is a KOKUYO SmartRing Binder."},
+            {"id": 118, "jp": "彼女はKOKUYOのKadokeshi Eraserを持っています。", "en": "She has a KOKUYO Kadokeshi Eraser."},
+            {"id": 119, "jp": "私はFaber-CastellのGrip 2001 Pencilが好きです。", "en": "I like the Faber-Castell Grip 2001 Pencil."},
+            {"id": 120, "jp": "これはFaber-CastellのPolychromos Colored Pencilsです。", "en": "This is Faber-Castell Polychromos Colored Pencils."},
+            {"id": 121, "jp": "彼のFaber-CastellのAmbition OpArt Penは美しいです。", "en": "His Faber-Castell Ambition OpArt Pen is beautiful."},
+            {"id": 122, "jp": "私はStaedtlerのNoris Pencil HBを使っています。", "en": "I use a Staedtler Noris Pencil HB."},
+            {"id": 123, "jp": "これはStaedtlerのMars Lumograph 100です。", "en": "This is a Staedtler Mars Lumograph 100."},
+            {"id": 124, "jp": "彼女はStaedtlerのTriplus Finelinerを持っています。", "en": "She has a Staedtler Triplus Fineliner."},
+            {"id": 125, "jp": "私はSakuraのPigma Micron 05を使っています。", "en": "I use a Sakura Pigma Micron 05."},
+            {"id": 126, "jp": "これはSakuraのGelly Roll Classicです。", "en": "This is a Sakura Gelly Roll Classic."},
+            {"id": 127, "jp": "彼はSakuraのKoi Coloring Brush Penを持っています。", "en": "He has a Sakura Koi Coloring Brush Pen."},
+            {"id": 128, "jp": "私はMUJIのGel Ink Pen 0.5が好きです。", "en": "I like the MUJI Gel Ink Pen 0.5."},
+            {"id": 129, "jp": "これはMUJIのA5 Notebook Ruledです。", "en": "This is a MUJI A5 Notebook Ruled."},
+            {"id": 130, "jp": "彼女はMUJIのWooden Pencil HBを使っています。", "en": "She uses a MUJI Wooden Pencil HB."},
+            {"id": 131, "jp": "私はMoleskineのClassic Hardcover Notebookを持っています。", "en": "I have a Moleskine Classic Hardcover Notebook."},
+            {"id": 132, "jp": "これはMoleskineのSmart Writing Setです。", "en": "This is a Moleskine Smart Writing Set."},
+            {"id": 133, "jp": "彼のMoleskineのWeekly Planner 2025は便利です。", "en": "His Moleskine Weekly Planner 2025 is convenient."},
+            {"id": 134, "jp": "私はPentelのEnerGel X 0.5を使っています。", "en": "I use a Pentel EnerGel X 0.5."},
+            {"id": 135, "jp": "これはPentelのGraphGear 1000です。", "en": "This is a Pentel GraphGear 1000."},
+            {"id": 136, "jp": "彼女はPentelのSign Pen Brushを持っています。", "en": "She has a Pentel Sign Pen Brush."},
+            {"id": 137, "jp": "私はParkerのJotter Ballpointが好きです。", "en": "I like the Parker Jotter Ballpoint."},
+            {"id": 138, "jp": "これはParkerのIM Fountain Penです。", "en": "This is a Parker IM Fountain Pen."},
+            {"id": 139, "jp": "彼のParkerのSonnet Black Lacquerは高級です。", "en": "His Parker Sonnet Black Lacquer is premium."},
+            {"id": 140, "jp": "私はCaran d'Acheの849 Ballpointを使っています。", "en": "I use a Caran d'Ache 849 Ballpoint."},
+            {"id": 141, "jp": "これはCaran d'AcheのEcridor Chevronです。", "en": "This is a Caran d'Ache Ecridor Chevron."},
+            {"id": 142, "jp": "彼女はCaran d'AcheのLéman Rouge Fountain Penを持っています。", "en": "She has a Caran d'Ache Léman Rouge Fountain Pen."},
+            {"id": 143, "jp": "私はKawecoのSport Classic Fountain Penを買いました。", "en": "I bought a Kaweco Sport Classic Fountain Pen."},
+            {"id": 144, "jp": "これはKawecoのAL Sport Mechanical Pencilです。", "en": "This is a Kaweco AL Sport Mechanical Pencil."},
+            {"id": 145, "jp": "彼はKawecoのStudent 70's Soulを使っています。", "en": "He uses a Kaweco Student 70's Soul."},
+            {"id": 146, "jp": "私はRotringの600 Mechanical Pencilが好きです。", "en": "I like the Rotring 600 Mechanical Pencil."},
+            {"id": 147, "jp": "これはRotringのRapid Pro Ballpointです。", "en": "This is a Rotring Rapid Pro Ballpoint."},
+            {"id": 148, "jp": "彼女はRotringのTikky Graphic 0.5を持っています。", "en": "She has a Rotring Tikky Graphic 0.5."},
+            {"id": 149, "jp": "私は野原工芸の槐（えんじゅ）ボールペンを持っています。", "en": "I have a Nohara Kogei Enju ballpoint pen."},
+            {"id": 150, "jp": "これは野原工芸の花梨瘤万年筆です。", "en": "This is a Nohara Kogei Karin-kobu fountain pen."},
+            {"id": 151, "jp": "彼の野原工芸の黒柿ペンシルは美しいです。", "en": "His Nohara Kogei Kokukaki pencil is beautiful."},
+            {"id": 152, "jp": "私は工房楔のシャーペン 黒柿を使っています。", "en": "I use a Koubou Kusabi mechanical pencil in kokukaki."},
+            {"id": 153, "jp": "これは工房楔のボールペン 花梨瘤です。", "en": "This is a Koubou Kusabi ballpoint pen in karin-kobu."},
+            {"id": 154, "jp": "彼女は工房楔の万年筆 ウォルナットを持っています。", "en": "She has a Koubou Kusabi fountain pen in walnut."},
+            {"id": 155, "jp": "私はボナンペンのクラシック ウッドペンが好きです。", "en": "I like the Bonanpen Classic Wood Pen."},
+            {"id": 156, "jp": "これはボナンペンのバーメイル エディションです。", "en": "This is a Bonanpen Burr Mail Edition."},
+            {"id": 157, "jp": "彼のボナンペンのハンドメイド 真鍮ペンは特別です。", "en": "His Bonanpen Handmade Brass Pen is special."},
+            {"id": 158, "jp": "私はLeposのミニボールペン Brassを持っています。", "en": "I have a Lepos Mini Ballpoint Pen Brass."},
+            {"id": 159, "jp": "これはLeposのステンレス ペンシルです。", "en": "This is a Lepos Stainless Steel Pencil."},
+            {"id": 160, "jp": "彼女はLeposのブラックウッド ペンを使っています。", "en": "She uses a Lepos Blackwood Pen."},
+            {"id": 161, "jp": "私はロメオ（Ito-ya）のNo.3 Fountain Penを買いました。", "en": "I bought a Romeo (Ito-ya) No.3 Fountain Pen."},
+            {"id": 162, "jp": "これはロメオ（Ito-ya）のRomeo No.2 Pencilです。", "en": "This is a Romeo (Ito-ya) Romeo No.2 Pencil."},
+            {"id": 163, "jp": "彼のロメオ（Ito-ya）のLeather Notebook Coverは高級です。", "en": "His Romeo (Ito-ya) Leather Notebook Cover is premium."},
+            {"id": 164, "jp": "私はクラフトAの木軸ボールペン くるみが好きです。", "en": "I like the Craft A wooden ballpoint pen in walnut."},
+            {"id": 165, "jp": "これはクラフトAのシャーペン 栗の木です。", "en": "This is a Craft A mechanical pencil in chestnut wood."},
+            {"id": 166, "jp": "彼女はクラフトAの万年筆 桜材を持っています。", "en": "She has a Craft A fountain pen in cherry wood."},
+            {"id": 167, "jp": "私はクルトガのAdvance Alpha Gel 0.5を使っています。", "en": "I use a Kurutoga Advance Alpha Gel 0.5."},
+            {"id": 168, "jp": "これはクルトガのDive 0.5 Limitedです。", "en": "This is a Kurutoga Dive 0.5 Limited."},
+            {"id": 169, "jp": "彼のクルトガのStandard Model 0.5は実用的です。", "en": "His Kurutoga Standard Model 0.5 is practical."},
+            {"id": 170, "jp": "私はStabiloのBoss Original Pastelを持っています。", "en": "I have a Stabilo Boss Original Pastel."},
+            {"id": 171, "jp": "これはStabiloのPoint 88 Finelinerです。", "en": "This is a Stabilo Point 88 Fineliner."},
+            {"id": 172, "jp": "彼女はStabiloのPen 68 Brushを使っています。", "en": "She uses a Stabilo Pen 68 Brush."},
+            {"id": 173, "jp": "私はPelikanのSouverän M400が好きです。", "en": "I like the Pelikan Souverän M400."},
+            {"id": 174, "jp": "これはPelikanのClassic M205です。", "en": "This is a Pelikan Classic M205."},
+            {"id": 175, "jp": "彼のPelikanのTwist Fountain Penは便利です。", "en": "His Pelikan Twist Fountain Pen is convenient."},
+            {"id": 176, "jp": "私はLeuchtturm1917のBullet Journal Edition 2を持っています。", "en": "I have a Leuchtturm1917 Bullet Journal Edition 2."},
+            {"id": 177, "jp": "これはLeuchtturm1917のA5 Dotted Notebookです。", "en": "This is a Leuchtturm1917 A5 Dotted Notebook."},
+            {"id": 178, "jp": "彼女はLeuchtturm1917のWeekly Planner 2025を使っています。", "en": "She uses a Leuchtturm1917 Weekly Planner 2025."},
+            {"id": 179, "jp": "私はClairefontaineのTriomphe Writing Padが好きです。", "en": "I like the Clairefontaine Triomphe Writing Pad."},
+            {"id": 180, "jp": "これはClairefontaineのGraf It Sketchbookです。", "en": "This is a Clairefontaine Graf It Sketchbook."},
+            {"id": 181, "jp": "彼のClairefontaineのKoverbook Spiralは実用的です。", "en": "His Clairefontaine Koverbook Spiral is practical."},
+            {"id": 182, "jp": "私はIto-yaのROMEO No.4 Fountain Penを買いました。", "en": "I bought an Ito-ya ROMEO No.4 Fountain Pen."},
+            {"id": 183, "jp": "これはIto-yaのOriginal Memo Padです。", "en": "This is an Ito-ya Original Memo Pad."},
+            {"id": 184, "jp": "彼女はIto-yaのFine Tools Pen Caseを持っています。", "en": "She has an Ito-ya Fine Tools Pen Case."},
+            {"id": 185, "jp": "私はKoh-i-NoorのHardtmuth 1500 Pencilを使っています。", "en": "I use a Koh-i-Noor Hardtmuth 1500 Pencil."},
+            {"id": 186, "jp": "これはKoh-i-NoorのVersatil 5200です。", "en": "This is a Koh-i-Noor Versatil 5200."},
+            {"id": 187, "jp": "彼のKoh-i-NoorのPolycolor Pencilsは高品質です。", "en": "His Koh-i-Noor Polycolor Pencils are high quality."},
+            {"id": 188, "jp": "私はPencoのPrime Timber 2.0が好きです。", "en": "I like the Penco Prime Timber 2.0."},
+            {"id": 189, "jp": "これはPencoのClipboard Goldです。", "en": "This is a Penco Clipboard Gold."},
+            {"id": 190, "jp": "彼女はPencoのDrafting Ballpointを持っています。", "en": "She has a Penco Drafting Ballpoint."},
+            {"id": 191, "jp": "私はSmiggleのGlitter Pen Setを使っています。", "en": "I use a Smiggle Glitter Pen Set."},
+            {"id": 192, "jp": "これはSmiggleのRainbow Pencil Caseです。", "en": "This is a Smiggle Rainbow Pencil Case."},
+            {"id": 193, "jp": "彼のSmiggleのSticker Book Deluxeは人気です。", "en": "His Smiggle Sticker Book Deluxe is popular."},
+            {"id": 194, "jp": "私はRifle Paper Co.のFloral Notebookを持っています。", "en": "I have a Rifle Paper Co. Floral Notebook."},
+            {"id": 195, "jp": "これはRifle Paper Co.のGarden Party Plannerです。", "en": "This is a Rifle Paper Co. Garden Party Planner."},
+            {"id": 196, "jp": "彼女はRifle Paper Co.のNotecard Setを使っています。", "en": "She uses a Rifle Paper Co. Notecard Set."},
+            {"id": 197, "jp": "私はHobonichiのTecho Planner A6が好きです。", "en": "I like the Hobonichi Techo Planner A6."},
+            {"id": 198, "jp": "これはHobonichiのWeeks Mega 2025です。", "en": "This is a Hobonichi Weeks Mega 2025."},
+            {"id": 199, "jp": "彼のHobonichiのTecho Cover Shellは美しいです。", "en": "His Hobonichi Techo Cover Shell is beautiful."},
+            {"id": 200, "jp": "私はCraft Design TechnologyのBallpoint Pen CDTP-001を持っています。", "en": "I have a Craft Design Technology Ballpoint Pen CDTP-001."}
         ];
 
         let currentLevel = null;
@@ -883,15 +883,15 @@
                 ];
                 const compliment = messages[Math.floor(Math.random() * messages.length)];
                 return `
-                    <div class="rounded-2xl border-2 border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 p-6 md:p-8 shadow-lg slide-in">
-                        <div class="flex items-center gap-3 mb-3">
-                            <span class="text-4xl">🎉</span>
-                            <p class="text-2xl font-black text-green-700">正解です！</p>
+                    <div class="rounded-3xl border-4 border-green-500 bg-gradient-to-br from-green-100 via-green-50 to-emerald-100 p-8 md:p-10 shadow-2xl slide-in ring-4 ring-green-200">
+                        <div class="flex items-center justify-center gap-4 mb-4">
+                            <span class="text-6xl animate-bounce">🎉</span>
+                            <p class="text-3xl md:text-4xl font-black text-green-800">正解です！</p>
                         </div>
-                        <p class="text-lg text-green-800 mb-4 font-medium">${compliment}</p>
-                        <div class="flex items-center gap-4 text-sm">
-                            <span class="px-3 py-1 rounded-full bg-green-200 text-green-800 font-semibold">連続正解: ${streak}問</span>
-                            <span class="px-3 py-1 rounded-full bg-green-200 text-green-800 font-semibold">スコア: ${score}問</span>
+                        <p class="text-xl md:text-2xl text-green-900 mb-6 font-bold text-center">${compliment}</p>
+                        <div class="flex items-center justify-center gap-4 text-base">
+                            <span class="px-4 py-2 rounded-full bg-green-300 text-green-900 font-bold shadow-lg">連続正解: ${streak}問</span>
+                            <span class="px-4 py-2 rounded-full bg-green-300 text-green-900 font-bold shadow-lg">スコア: ${score}問</span>
                         </div>
                     </div>
                 `;
@@ -905,14 +905,14 @@
             const hint = tips[Math.floor(Math.random() * tips.length)];
 
             return `
-                <div class="rounded-2xl border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-pink-50 p-6 md:p-8 shadow-lg slide-in">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="text-4xl">❗</span>
-                        <p class="text-2xl font-black text-rose-700">残念、不正解です。</p>
+                <div class="rounded-3xl border-4 border-red-500 bg-gradient-to-br from-red-100 via-rose-50 to-pink-100 p-8 md:p-10 shadow-2xl slide-in ring-4 ring-red-200">
+                    <div class="flex items-center justify-center gap-4 mb-4">
+                        <span class="text-6xl">❌</span>
+                        <p class="text-3xl md:text-4xl font-black text-red-800">不正解です</p>
                     </div>
-                    <p class="text-lg text-rose-800 mb-4 font-medium">${hint}</p>
-                    <div class="flex items-center gap-4 text-sm">
-                        <span class="px-3 py-1 rounded-full bg-rose-200 text-rose-800 font-semibold">連続正解: ${streak}問</span>
+                    <p class="text-xl md:text-2xl text-red-900 mb-6 font-bold text-center">${hint}</p>
+                    <div class="flex items-center justify-center gap-4 text-base">
+                        <span class="px-4 py-2 rounded-full bg-red-300 text-red-900 font-bold shadow-lg">連続正解: ${streak}問</span>
                     </div>
                 </div>
             `;
